@@ -48,41 +48,41 @@ namespace
             dst[i] = src[i];
         }
     }
-    void GetColorTable(uint16_t **src, unsigned int channel_count, double **dst, int colorspace)
+    void GetColorTable(uint16_t *src, unsigned int channel_count, double *dst, int colorspace)
     {
         for (unsigned int i = 0; i < channel_count; ++i)
         {
             switch (colorspace)
             {
             case psd::COLOR_SPACE::RGB:
-                dst[i] = new double[4];
-                dst[i][0] = remap(src[i][0], 65535.0, 0.0, 255.0, 0.0);
-                dst[i][1] = remap(src[i][1], 65535.0, 0.0, 255.0, 0.0);
-                dst[i][2] = remap(src[i][2], 65535.0, 0.0, 255.0, 0.0);
-                dst[i][3] = remap(src[i][3], 65535.0, 0.0, 255.0, 0.0);
+                dst = new double[4];
+                dst[0] = remap(src[0], 65535.0, 0.0, 255.0, 0.0);
+                dst[1] = remap(src[1], 65535.0, 0.0, 255.0, 0.0);
+                dst[2] = remap(src[2], 65535.0, 0.0, 255.0, 0.0);
+                dst[3] = remap(src[3], 65535.0, 0.0, 255.0, 0.0);
                 break;
             case psd::COLOR_SPACE::CMYK:
-                dst[i] = new double[4];
-                dst[i][0] = remap(src[i][0], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][1] = remap(src[i][1], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][2] = remap(src[i][2], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][3] = remap(src[i][3], 65535.0, 0.0, 100.0, 0.0);
+                dst = new double[4];
+                dst[0] = remap(src[0], 65535.0, 0.0, 100.0, 0.0);
+                dst[1] = remap(src[1], 65535.0, 0.0, 100.0, 0.0);
+                dst[2] = remap(src[2], 65535.0, 0.0, 100.0, 0.0);
+                dst[3] = remap(src[3], 65535.0, 0.0, 100.0, 0.0);
                 break;
 
             case psd::COLOR_SPACE::LAB:
-                dst[i] = new double[4];
-                dst[i][0] = remap(src[i][0], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][1] = remap(src[i][1], 65535.0, 0.0, 255.0, -128.0);
-                dst[i][2] = remap(src[i][2], 65535.0, 0.0, 255.0, -128.0);
-                dst[i][3] = remap(src[i][3], 65535.0, 0.0, 255.0, 0.0);
+                dst = new double[4];
+                dst[0] = remap(src[0], 65535.0, 0.0, 100.0, 0.0);
+                dst[1] = remap(src[1], 65535.0, 0.0, 255.0, -128.0);
+                dst[2] = remap(src[2], 65535.0, 0.0, 255.0, -128.0);
+                dst[3] = remap(src[3], 65535.0, 0.0, 255.0, 0.0);
                 break;
 
             case psd::COLOR_SPACE::HSB:
-                dst[i] = new double[4];
-                dst[i][0] = remap(src[i][0], 65535.0, 0.0, 360.0, 0.0);
-                dst[i][1] = remap(src[i][1], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][2] = remap(src[i][2], 65535.0, 0.0, 100.0, 0.0);
-                dst[i][3] = remap(src[i][3], 65535.0, 0.0, 255.0, 0.0);
+                dst = new double[4];
+                dst[0] = remap(src[0], 65535.0, 0.0, 360.0, 0.0);
+                dst[1] = remap(src[1], 65535.0, 0.0, 100.0, 0.0);
+                dst[2] = remap(src[2], 65535.0, 0.0, 100.0, 0.0);
+                dst[3] = remap(src[3], 65535.0, 0.0, 255.0, 0.0);
                 break;
             }
         }
@@ -108,6 +108,7 @@ namespace Image
         case psd::colorMode::RGB:
 
             psd::ImageDataSection *dataSection = psd::ParseImageDataSection(doc, file, allocator);
+            psd::ImageResourcesSection *resourcesSection = psd::ParseImageResourcesSection(doc, file, allocator);
             if (dataSection)
             {
                 image = new Image();
@@ -135,13 +136,16 @@ namespace Image
                         float32_t *buffer = static_cast<float *>(dataSection->images[i].data);
                         CopyRemainingPixels(buffer, image->channels[i].data, doc->width * doc->height);
                     }
+
+                    GetColorTable(resourcesSection->alphaChannels[i].color, doc->channelCount, image->channels[i].color, resourcesSection->alphaChannels[i].colorSpace);
                 }
                 image->width = doc->width;
                 image->height = doc->height;
                 image->channelCount = doc->channelCount;
-                image->colorSpace = ColorSpace::RGB;
+                image->colorMode = ColorMode::RGB;
+                psd::DestroyImageDataSection(dataSection, allocator);
             }
-            allocator->Free(dataSection);
+
             break;
 
         case psd::colorMode::CMYK:
@@ -175,12 +179,55 @@ namespace Image
                 image->width = doc->width;
                 image->height = doc->height;
                 image->channelCount = doc->channelCount;
-                image->colorSpace = ColorSpace::CMYK;
+                image->colorMode = ColorMode::CMYK;
+                psd::DestroyImageDataSection(dataSection, allocator);
             }
-            allocator->Free(dataSection);
             break;
         case psd::colorMode::MULTICHANNEL:
-            /* code */
+            psd::ImageDataSection *dataSection = psd::ParseImageDataSection(doc, file, allocator);
+            psd::ImageResourcesSection *resourcesSection = psd::ParseImageResourcesSection(doc, file, allocator);
+            if (dataSection)
+            {
+                image = new Image();
+                image->channels = new Channel[doc->channelCount];
+
+                for (unsigned int i = 0; i < doc->channelCount; ++i)
+                {
+
+                    if (doc->bitsPerChannel == 8)
+                    {
+                        uint8_t *buffer = static_cast<uint8_t *>(dataSection->images[i].data);
+                        CopyRemainingPixels(buffer, image->channels[i].data, doc->width * doc->height);
+                    }
+                    else if (doc->bitsPerChannel == 16)
+                    {
+                        uint16_t *buffer = static_cast<uint16_t *>(dataSection->images[i].data);
+                        CopyRemainingPixels(buffer, image->channels[i].data, doc->width * doc->height);
+                    }
+                    else if (doc->bitsPerChannel == 32)
+                    {
+                        float32_t *buffer = static_cast<float *>(dataSection->images[i].data);
+                        CopyRemainingPixels(buffer, image->channels[i].data, doc->width * doc->height);
+                    }
+
+                    GetColorTable(resourcesSection->alphaChannels[i].color, doc->channelCount, image->channels[i].color, resourcesSection->alphaChannels[i].colorSpace);
+                    if (resourcesSection->alphaChannels[i].colorSpace == psd::AlphaChannel::Mode::SPOT)
+                        image->channels[i].type = Channel::Spot;
+                    else if (resourcesSection->alphaChannels[i].colorSpace == psd::AlphaChannel::Mode::ALPHA)
+                        image->channels[i].type = Channel::Alpha;
+                    else if (resourcesSection->alphaChannels[i].colorSpace == psd::AlphaChannel::Mode::INVERTED_ALPHA)
+                        image->channels[i].type = Channel::InvertedAlpha;
+                }
+                image->width = doc->width;
+                image->height = doc->height;
+                image->channelCount = doc->channelCount;
+                image->colorMode = ColorMode::RGB;
+
+                psd::DestroyImageResourcesSection(resourcesSection, allocator);
+                psd::DestroyImageDataSection(dataSection, allocator);
+            }
+            break;
+
             break;
         case psd::colorMode::DUOTONE:
             /* code */
@@ -216,11 +263,15 @@ namespace Image
                 image->width = doc->width;
                 image->height = doc->height;
                 image->channelCount = doc->channelCount;
-                image->colorSpace = ColorSpace::LAB;
+                image->colorMode = ColorMode::LAB;
+
+                psd::DestroyImageDataSection(dataSection, allocator);
             }
+
             break;
         default:
             break;
         }
+        return image;
     }
 }

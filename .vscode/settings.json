@@ -4,6 +4,7 @@
         "chrono": "cpp",
         "limits": "cpp",
         "random": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "iosfwd": "cpp"
     }
 }
