@@ -14,45 +14,43 @@ namespace Image
         HSV = 2,
         LAB = 3,
         MULTI_CHANNEL = 4
-    }ColorMode;
+    } ColorMode;
     typedef struct Channel
     {
-        typedef enum Type
+        enum Mode
         {
-            L,
-            A,
-            B,
-            R,
-            G,
-            B,
-            C,
-            M,
-            Y,
-            K,
-            H,
-            S,
-            V,
             Alpha,
             Spot,
-            InvertedAlpha,
-        }; 
+            InvertedAlpha
+        };
         uint8_t *data;
-        Type type;
+        Mode mode;
         uint8_t bitsPerPixel;
         double *color;
+        ColorMode colorspace;
     } Channel;
-    typedef struct Image
+    class Image
     {
+
+    public:
         uint32_t width;
         uint32_t height;
         Channel *channels;
         uint8_t channelCount;
         ColorMode colorMode;
-        void open(const char *path);
-        uint8_t* InterleaveRGB();
-        Image* resize(uint32_t width, uint32_t height);      
-        void save(const char *path);
-    } Image;
+
+    public:
+        Image();
+        ~Image();
+        int open(const char *path);
+        Image *resize(uint32_t width, uint32_t height);
+        Image *resize(uint32_t size, bool keepAspectRatio);
+        void save(char *path);
+        uint8_t *InterleaveRGB();
+        //assign operator
+        Image &operator=(const Image &other);
+
+    };
 }
 
-#endif
+#endif // IMAGE_H

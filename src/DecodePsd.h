@@ -5,5 +5,5 @@
 #include "Image.h"
 namespace Image{
     
-    Image* createImage( psd::NativeFile *file, psd::Allocator *allocator, psd::Document *doc);
+    int createImage( psd::NativeFile *file, psd::Allocator *allocator, psd::Document *doc, Image * image);
 }
