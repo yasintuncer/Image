@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/ColorSpace.h
+typeinfo
+-
+Conversion.h
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.h
+
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.cpp
+Conversion.h
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.h
+ColorSpace.h
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/ColorSpace.h
+Utils.h
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Utils.h
+cmath
+-
+algorithm
+-
+
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.h
+
+/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Utils.h
+

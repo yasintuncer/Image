@@ -1,55 +1,76 @@
 #ifndef IMAGE_H
 #define IMAGE_H
+#include "Channel.h"
 #include <stdint.h>
+
 namespace Image
 {
-    enum SupportedFormats
+    class Channel;
+    
+    // ------------------------------------------------------------
+    // supported file formats
+    typedef enum SupportedFormats
     {
         PSD = 0
-    };
-    typedef enum ColorMode
+
+    } SupportedFormats;
+
+    // ------------------------------------------------------------
+    // color space : color space of image
+    typedef enum ColorSpace
     {
         RGB = 0,
         CMYK = 1,
         HSV = 2,
         LAB = 3,
         MULTI_CHANNEL = 4
-    } ColorMode;
-    typedef struct Channel
-    {
-        enum Mode
-        {
-            Alpha,
-            Spot,
-            InvertedAlpha
-        };
-        uint8_t *data;
-        Mode mode;
-        uint8_t bitsPerPixel;
-        double *color;
-        ColorMode colorspace;
-    } Channel;
+    } ColorSpace;
+
+    // ------------------------------------------------------------
+    // image class
     class Image
     {
-
     public:
-        uint32_t width;
-        uint32_t height;
-        Channel *channels;
-        uint8_t channelCount;
-        ColorMode colorMode;
-
-    public:
+        // ---------------
+        // constructor
         Image();
+
+        // ---------------
+        // destructor
         ~Image();
-        int open(const char *path);
-        Image *resize(uint32_t width, uint32_t height);
-        Image *resize(uint32_t size, bool keepAspectRatio);
-        void save(char *path);
-        uint8_t *InterleaveRGB();
-        //assign operator
+        // ---------------
+        // assign operator
         Image &operator=(const Image &other);
 
+    public:
+        uint32_t width;              // width of image
+        uint32_t height;             // height of image
+        Channel **channels;          // channels of image
+        uint8_t channelCount;        // number of channels
+        uint8_t colorSpace;       // color space of image
+        SupportedFormats fileformat; // file format of image
+
+    public:
+        // ---------------
+        // load image from file
+        int open(const char *path);
+
+        // ---------------
+        // save image to file jpeg format
+        int save(const char *path);
+
+        // ---------------
+        // close image
+        int close();
+
+        // ---------------
+        // interleave RGB data from channels
+        uint8_t *InterleaveRGB();
+
+        // ---------------
+        // resize image
+        Image *resize(uint32_t width, uint32_t height);
+        Image *resize(uint32_t size, bool keepAspectRatio);
     };
 }
 

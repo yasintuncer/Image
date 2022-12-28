@@ -1,0 +1,157 @@
+[
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/decode_test.dir/test/decode_test.cpp.o -c /home/master/Yasin/Projects/Image/test/decode_test.cpp",
+  "file": "/home/master/Yasin/Projects/Image/test/decode_test.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/extract_test.dir/test/extract.cpp.o -c /home/master/Yasin/Projects/Image/test/extract.cpp",
+  "file": "/home/master/Yasin/Projects/Image/test/extract.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/Image.dir/src/DecodePsd.cpp.o -c /home/master/Yasin/Projects/Image/src/DecodePsd.cpp",
+  "file": "/home/master/Yasin/Projects/Image/src/DecodePsd.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/Image.dir/src/JpegExtractor.cpp.o -c /home/master/Yasin/Projects/Image/src/JpegExtractor.cpp",
+  "file": "/home/master/Yasin/Projects/Image/src/JpegExtractor.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/Image.dir/src/Image.cpp.o -c /home/master/Yasin/Projects/Image/src/Image.cpp",
+  "file": "/home/master/Yasin/Projects/Image/src/Image.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -o CMakeFiles/Image.dir/src/Channel.cpp.o -c /home/master/Yasin/Projects/Image/src/Channel.cpp",
+  "file": "/home/master/Yasin/Projects/Image/src/Channel.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd_test.dir/test/psd_test.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/test/psd_test.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/test/psd_test.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdExport.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdExport.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdExport.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdPch.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdPch.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdPch.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdDecompressRle.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdDecompressRle.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdDecompressRle.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdInterleave.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdInterleave.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdInterleave.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdLayerCanvasCopy.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdLayerCanvasCopy.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdLayerCanvasCopy.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdAllocator.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdAllocator.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdAllocator.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdFile.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdFile.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdFile.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdMallocAllocator.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdMallocAllocator.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdMallocAllocator.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdNativeFile_Linux.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdNativeFile_Linux.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdNativeFile_Linux.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdParseColorModeDataSection.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseColorModeDataSection.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseColorModeDataSection.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdParseDocument.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseDocument.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseDocument.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdParseImageDataSection.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseImageDataSection.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseImageDataSection.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdParseImageResourcesSection.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseImageResourcesSection.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseImageResourcesSection.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdParseLayerMaskSection.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseLayerMaskSection.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdParseLayerMaskSection.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdBlendMode.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdBlendMode.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdBlendMode.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdColorMode.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdColorMode.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdColorMode.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdFixedSizeString.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdFixedSizeString.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdFixedSizeString.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdSyncFileReader.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdSyncFileReader.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdSyncFileReader.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/gcc  -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g   -o CMakeFiles/psd.dir/src/Psdminiz.c.o   -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/Psdminiz.c",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/Psdminiz.c"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdSyncFileWriter.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdSyncFileWriter.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdSyncFileWriter.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdStringUtil.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdStringUtil.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdStringUtil.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/psd_sdk",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/psd_sdk/src  -g -g   -std=gnu++11 -o CMakeFiles/psd.dir/src/PsdTgaExporter.cpp.o -c /home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdTgaExporter.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/psd_sdk/src/PsdTgaExporter.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/ColorSpace",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -std=gnu++11 -o CMakeFiles/ColorSpace.dir/src/ColorSpace.cpp.o -c /home/master/Yasin/Projects/Image/modules/ColorSpace/src/ColorSpace.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/ColorSpace/src/ColorSpace.cpp"
+},
+{
+  "directory": "/home/master/Yasin/Projects/Image/build/modules/ColorSpace",
+  "command": "/usr/bin/g++   -I/home/master/Yasin/Projects/Image/modules/ColorSpace/src  -g   -std=gnu++11 -o CMakeFiles/ColorSpace.dir/src/Conversion.cpp.o -c /home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.cpp",
+  "file": "/home/master/Yasin/Projects/Image/modules/ColorSpace/src/Conversion.cpp"
+}
+]

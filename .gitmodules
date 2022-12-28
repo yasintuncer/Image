@@ -1,9 +1,6 @@
-[submodule "3rd/ColorSpace"]
-	path = 3rd/ColorSpace
-	url = https://github.com/yasintuncer/ColorSpace.git
-[submodule "modules/ColorSpace"]
-	path = modules/ColorSpace
-	url = https://github.com/yasintuncer/ColorSpace.git
+[submodule "modules/Color"]
+	path = modules/Color
+	url = https://github.com/yasintuncer/Color.git
 [submodule "modules/psd_sdk"]
 	path = modules/psd_sdk
 	url = https://github.com/yasintuncer/psd_sdk.git

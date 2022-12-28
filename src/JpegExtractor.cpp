@@ -34,7 +34,7 @@ my_error_exit(j_common_ptr cinfo)
     longjmp(myerr->setjmp_buffer, 1);
 }
 
-void write_jpeg_file(char *filename, int quality, int image_width, int image_height, JSAMPLE *image_buffer)
+int write_jpeg_file(const char *filename, int quality, int image_width, int image_height, JSAMPLE *image_buffer)
 {
     struct jpeg_compress_struct cinfo;
     struct my_error_mgr jerr;
@@ -53,7 +53,7 @@ void write_jpeg_file(char *filename, int quality, int image_width, int image_hei
          */
         jpeg_destroy_compress(&cinfo);
         fclose(outfile);
-        return;
+        return -1;
     }
     /* Now we can initialize the JPEG compression object. */
     jpeg_create_compress(&cinfo);
@@ -62,7 +62,7 @@ void write_jpeg_file(char *filename, int quality, int image_width, int image_hei
     if ((outfile = fopen(filename, "wb")) == NULL)
     {
         fprintf(stderr, "can't open %s", filename);
-        return;
+        return -1;
     }
     jpeg_stdio_dest(&cinfo, outfile);
 
@@ -98,4 +98,5 @@ void write_jpeg_file(char *filename, int quality, int image_width, int image_hei
     /* Step 7: release JPEG compression object */
     /* This is an important step since it will release a good deal of memory. */
     jpeg_destroy_compress(&cinfo);
+    return 0;
 }
