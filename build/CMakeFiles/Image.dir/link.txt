@@ -1,2 +1,0 @@
-/usr/bin/ar qc libImage.a  CMakeFiles/Image.dir/src/DecodePsd.cpp.o CMakeFiles/Image.dir/src/JpegExtractor.cpp.o CMakeFiles/Image.dir/src/Image.cpp.o CMakeFiles/Image.dir/src/Channel.cpp.o
-/usr/bin/ranlib libImage.a

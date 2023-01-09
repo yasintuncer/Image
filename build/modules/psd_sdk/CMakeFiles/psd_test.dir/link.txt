@@ -1,1 +1,0 @@
-/usr/bin/g++  -g -g   CMakeFiles/psd_test.dir/test/psd_test.cpp.o  -o psd_test  libpsd.a -lrt 

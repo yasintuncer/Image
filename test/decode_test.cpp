@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     std::cout << "Image Name: " << argv[1] << std::endl;
     std::cout << "Image Width: " << image->width << std::endl;
     std::cout << "Image Height: " << image->height << std::endl;
-    std::cout << "Image Color Mode: " << image->colorSpace << std::endl;
+    std::cout << "Image Color Mode: " << image->colorMode << std::endl;
     std::cout << "Image Channel Count: " << image->channelCount << std::endl;
     for(unsigned int i = 0; i< image->channelCount; i++){
         std::cout << "Channel Mode: " << (int)image->channels[i]->mode << std::endl;

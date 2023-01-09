@@ -1,4 +1,9 @@
 {
+    "cmake.debugConfig": {
+        "args": [
+            "/home/master/Yasin/Projects/Image/10renk"
+        ]
+    },
     "files.associations": {
         "algorithm": "cpp",
         "chrono": "cpp",
@@ -52,6 +57,18 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
-    }
+        "typeinfo": "cpp",
+        "execution": "cpp",
+        "ratio": "cpp",
+        "thread": "cpp",
+        "bitset": "cpp",
+        "complex": "cpp",
+        "condition_variable": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "unordered_set": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

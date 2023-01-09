@@ -1,1 +1,0 @@
-/usr/bin/g++  -g   CMakeFiles/decode_test.dir/test/decode_test.cpp.o  -o decode_test   -L/home/master/Yasin/Projects/Image/install/lib  -Wl,-rpath,/home/master/Yasin/Projects/Image/install/lib libImage.a modules/psd_sdk/libpsd.a modules/ColorSpace/libColorSpace.a -ljpeg -lrt 
