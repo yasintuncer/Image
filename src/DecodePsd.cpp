@@ -1,19 +1,28 @@
+// Image library includes
+#include "Image.h"
+#include "DecodePsd.h"
+// Psd sdk includes
 #include "Psd.h"
+#include "PsdDocument.h"
+#include "PsdStringUtil.h"
 #include "PsdMallocAllocator.h"
+#include "PsdNativeFile.h"
 #include "PsdColorMode.h"
 #include "PsdAlphaChannel.h"
 #include "PsdPlanarImage.h"
 #include "PsdImageResourcesSection.h"
 #include "PsdImageDataSection.h"
+#include "PsdParseDocument.h"
 #include "PsdParseImageDataSection.h"
 #include "PsdParseImageResourcesSection.h"
 #include "Psdinttypes.h"
-#include "DecodePsd.h"
+
+// C++ includes
 #include <stdlib.h>
 #include <cmath>
 #include <cstring>
 #include <iostream>
-
+PSD_USING_NAMESPACE;
 //-------------------- Helper functions --------------------
 namespace
 {
@@ -68,10 +77,10 @@ namespace
             dst[3] = remap(src[3], 65535.0, 0.0, 255.0, 0.0);
             break;
         case psd::COLOR_SPACE::CMYK:
-            dst[0] = 100.0 - remap(src[0], 65535.0, 0.0, 100.0, 0.0);
-            dst[1] = 100.0 - remap(src[1], 65535.0, 0.0, 100.0, 0.0);
-            dst[2] = 100.0 - remap(src[2], 65535.0, 0.0, 100.0, 0.0);
-            dst[3] = 100.0 - remap(src[3], 65535.0, 0.0, 100.0, 0.0);
+            dst[0] = 100 - remap(src[0], 65535.0, 0.0, 100.0, 0.0);
+            dst[1] = 100 - remap(src[1], 65535.0, 0.0, 100.0, 0.0);
+            dst[2] = 100 - remap(src[2], 65535.0, 0.0, 100.0, 0.0);
+            dst[3] = 100 - remap(src[3], 65535.0, 0.0, 100.0, 0.0);
             break;
 
         case psd::COLOR_SPACE::LAB:
@@ -90,155 +99,367 @@ namespace
         }
     }
 }
-namespace Image
+IMAGE_NAMESPACE_BEGIN
+namespace DecodePsd
 {
     // ---------------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------------
-    int createImage(psd::NativeFile *file, psd::Allocator *allocator, psd::Document *doc, Image *image)
+    // getChannel - get channel data from psd file
+    int getChannel(void *data, psd::Document *doc, psd::AlphaChannel *channel_resource, Channel *channel, int channelIndex)
     {
-        psd::ImageDataSection *dataSection = psd::ParseImageDataSection(doc, file, allocator);
-        psd::ImageResourcesSection *resourcesSection = psd::ParseImageResourcesSection(doc, file, allocator);
-        if (!dataSection || !resourcesSection)
+        switch (doc->colorMode)
+        {
+        // unsupported color modes
+        case psd::colorMode::BITMAP:
         {
             return -1;
         }
-
-        int result = 0;
-        switch (doc->colorMode)
-        {
-        case psd::colorMode::BITMAP:
-            /* code */
-            result = -1;
-            break;
+        break;
+        // unsupported color modes
         case psd::colorMode::GRAYSCALE:
-            /* code */
-            result = -1;
-            break;
-        case psd::colorMode::INDEXED:
-            /* code */
-            result = -1;
-            break;
-        case psd::colorMode::RGB:
-
-            for (unsigned int i = 0; i < doc->channelCount; ++i)
-            {
-                image->channels[i] = new Channel();
-                image->channels[i]->data = (uint8_t *)malloc(doc->width * doc->height * sizeof(uint8_t));
-                image->channels[i]->size = doc->width * doc->height * sizeof(uint8_t);
-                if (doc->bitsPerChannel == 8)
-                {
-                    CopyRemainingPixels<uint8_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 16)
-                {
-                    CopyRemainingPixels<uint16_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 32)
-                {
-                    CopyRemainingPixels<float32_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-
-                GetColorTable(resourcesSection->alphaChannels[i].color, image->channels[i]->color, resourcesSection->alphaChannels[i].colorSpace);
-            }
-            image->width = doc->width;
-            image->height = doc->height;
-            image->channelCount = doc->channelCount;
-            image->colorSpace = ColorSpace::RGB;
-            break;
-
-        case psd::colorMode::CMYK:
-            for (unsigned int i = 0; i < doc->channelCount; i++)
-            {
-                image->channels[i] = new Channel();
-                image->channels[i]->data = (uint8_t *)malloc(doc->width * doc->height * sizeof(uint8_t));
-                image->channels[i]->size = doc->width * doc->height * sizeof(uint8_t);
-                if (doc->bitsPerChannel == 8)
-                {
-                    CopyRemainingPixels<uint8_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 16)
-                {
-                    CopyRemainingPixels<uint16_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 32)
-                {
-                    CopyRemainingPixels<float32_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-            }
-            image->width = doc->width;
-            image->height = doc->height;
-            image->channelCount = doc->channelCount;
-            image->colorSpace = ColorSpace::CMYK;
-            break;
-
-        case psd::colorMode::MULTICHANNEL:
-            for (unsigned int i = 0; i < doc->channelCount; ++i)
-            {
-
-                image->channels[i]->data = (uint8_t *)malloc(doc->width * doc->height * sizeof(uint8_t));
-                image->channels[i]->size = doc->width * doc->height * sizeof(uint8_t);
-                if (doc->bitsPerChannel == 8)
-                {
-                    CopyRemainingPixels<uint8_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 16)
-                {
-                    CopyRemainingPixels<uint16_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 32)
-                {
-                    CopyRemainingPixels<float32_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                uint16_t color[4];
-                color[0] = resourcesSection->alphaChannels[i].color[0];
-                color[1] = resourcesSection->alphaChannels[i].color[1];
-                color[2] = resourcesSection->alphaChannels[i].color[2];
-                color[3] = resourcesSection->alphaChannels[i].color[3];
-                GetColorTable(color, image->channels[i]->color, resourcesSection->alphaChannels[i].colorSpace);
-                std::cout << image->channels[i]->color[0] << " " << image->channels[i]->color[1] << " " << image->channels[i]->color[2] << " " << image->channels[i]->color[3] << std::endl;
-                image->channels[i]->mode = resourcesSection->alphaChannels[i].mode;
-                image->channels[i]->colorspace = resourcesSection->alphaChannels[i].colorSpace;
-                image->channels[i]->opacity = resourcesSection->alphaChannels[i].opacity;
-            }
-            image->width = doc->width;
-            image->height = doc->height;
-            image->channelCount = doc->channelCount;
-            image->colorSpace = ColorSpace::MULTI_CHANNEL;
-            break;
-        case psd::colorMode::DUOTONE:
-            /* code */
-            break;
-        case psd::colorMode::LAB:
-
-            for (unsigned int i = 0; i < doc->channelCount; i++)
-            {
-                image->channels[i] = new Channel();
-                image->channels[i]->data = (uint8_t *)malloc(doc->width * doc->height * sizeof(uint8_t));
-                image->channels[i]->size = doc->width * doc->height * sizeof(uint8_t);
-                if (doc->bitsPerChannel == 8)
-                {
-                    CopyRemainingPixels<uint8_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 16)
-                {
-                    CopyRemainingPixels<uint16_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-                else if (doc->bitsPerChannel == 32)
-                {
-                    CopyRemainingPixels<float32_t>(dataSection->images[i].data, image->channels[i]->data, doc->width * doc->height);
-                }
-            }
-            image->width = doc->width;
-            image->height = doc->height;
-            image->channelCount = doc->channelCount;
-            image->colorSpace = ColorSpace::LAB;
-            break;
-        default:
-            result = -1;
-            break;
-            psd::DestroyImageDataSection(dataSection, allocator);
-            psd::DestroyImageResourcesSection(resourcesSection, allocator);
+        {
+            return -1;
         }
-        return result;
+        break;
+        // unsupported color modes
+        case psd::colorMode::INDEXED:
+        {
+            return -1;
+        }
+        break;
+        case psd::colorMode::RGB:
+        {
+            channel->size = doc->width * doc->height * sizeof(uint8_t);
+            channel->colorspace = Channel::RGB;
+            channel->bitsPerPixel = 8;
+            channel->opacity = channel_resource->opacity;
+
+            // channel colors
+            switch (channelIndex)
+            {
+            case 0:
+            {
+                channel->color[0] = 255;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 1:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 255;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 2:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 255;
+                channel->color[3] = 0;
+            }
+            break;
+            case 3:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            default:
+                break;
+            }
+
+            // Copy data to channel
+            channel->data = new uint8_t[channel->size];
+            switch (channel->bitsPerPixel)
+            {
+            case 8:
+                CopyRemainingPixels<uint8_t>(data, channel->data, channel->size);
+                break;
+
+            case 16:
+                CopyRemainingPixels<uint16_t>(data, channel->data, channel->size);
+                break;
+            case 32:
+                CopyRemainingPixels<float32_t>(data, channel->data, channel->size);
+                break;
+            default:
+                delete[] channel->data;
+                channel->data = nullptr;
+                return -1;
+            }
+        }
+        break;
+        case psd::colorMode::CMYK:
+        {
+            channel->size = doc->width * doc->height * sizeof(uint8_t);
+            channel->colorspace = Channel::CMYK;
+            channel->bitsPerPixel = 8;
+            channel->opacity = channel_resource->opacity;
+            // channel colors
+            switch (channelIndex)
+            {
+            case 0:
+            {
+                channel->color[0] = 100;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 1:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 100;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 2:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 100;
+                channel->color[3] = 0;
+            }
+            break;
+            case 3:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 100;
+            }
+            break;
+            default:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+
+            break;
+            }
+
+            // Copy data to channel
+            channel->data = new uint8_t[channel->size];
+            switch (channel->bitsPerPixel)
+            {
+            case 8:
+                CopyRemainingPixels<uint8_t>(data, channel->data, channel->size);
+                break;
+            case 16:
+                CopyRemainingPixels<uint16_t>(data, channel->data, channel->size);
+                break;
+            case 32:
+                CopyRemainingPixels<float32_t>(data, channel->data, channel->size);
+                break;
+            default:
+                delete[] channel->data;
+                channel->data = nullptr;
+                return -1;
+            }
+        }
+        break;
+        case psd::colorMode::MULTICHANNEL:
+        {
+            channel->size = doc->width * doc->height * sizeof(uint8_t);
+            channel->mode = channel_resource->mode;
+            channel->bitsPerPixel = 8;
+            channel->colorspace = channel_resource->colorSpace;
+            channel->opacity = channel_resource->opacity;
+            uint16_t color[4];
+            GetColorTable(channel_resource->color, channel->color, channel_resource->colorSpace);
+            channel->data = new uint8_t[channel->size];
+            switch (channel->bitsPerPixel)
+            {
+            case 8:
+                CopyRemainingPixels<uint8_t>(data, channel->data, channel->size);
+                break;
+            case 16:
+                CopyRemainingPixels<uint16_t>(data, channel->data, channel->size);
+                break;
+            case 32:
+                CopyRemainingPixels<float32_t>(data, channel->data, channel->size);
+                break;
+            default:
+                delete[] channel->data;
+                channel->data = nullptr;
+                return -1;
+            }
+        }
+        break;
+        case psd::colorMode::DUOTONE:
+        {
+            return -1;
+        }
+        break;
+        case psd::colorMode::LAB:
+        {
+            channel->size = doc->width * doc->height * sizeof(uint8_t);
+            channel->colorspace = channel_resource->colorSpace;
+            channel->bitsPerPixel = 8;
+            channel->opacity = channel_resource->opacity;
+            // channel colors
+            switch (channelIndex)
+            {
+            case 0:
+            {
+                channel->color[0] = 100;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 1:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 100;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            case 2:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 100;
+                channel->color[3] = 0;
+            }
+            break;
+            default:
+            {
+                channel->color[0] = 0;
+                channel->color[1] = 0;
+                channel->color[2] = 0;
+                channel->color[3] = 0;
+            }
+            break;
+            }
+
+            // Copy data to channel
+            channel->data = new uint8_t[channel->size];
+            switch (channel->bitsPerPixel)
+            {
+            case 8:
+                CopyRemainingPixels<uint8_t>(data, channel->data, channel->size);
+                break;
+            case 16:
+                CopyRemainingPixels<uint16_t>(data, channel->data, channel->size);
+                break;
+            case 32:
+                CopyRemainingPixels<float32_t>(data, channel->data, channel->size);
+                break;
+            default:
+                delete[] channel->data;
+                channel->data = nullptr;
+                return -1;
+            }
+        }
+        break;
+        default:
+            return -1;
+        }
+        return 0;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // DecodePSD - decode psd file
+    int open(const char *filename, Image *image)
+    {
+        // Create allocator and file object
+        psd::MallocAllocator allocator;
+        psd::NativeFile file(&allocator);
+
+        // Open file
+        const wchar_t *wpath = stringUtil::ConvertString(filename);
+        if (!file.OpenRead(wpath))
+        {
+            std::cout << "Error: Failed to open file " << wpath << std::endl;
+            return -1;
+        }
+
+        // Create document
+        psd::Document *document;
+        document = psd::CreateDocument(&file, &allocator);
+
+        if (!document)
+        {
+            std::cout << "Error: Failed to create document" << std::endl;
+            file.Close();
+            return -1;
+        }
+        // indexed, duotone, bitmap color modes are not supported yet
+        if (document->colorMode == psd::colorMode::INDEXED || document->colorMode == psd::colorMode::DUOTONE || document->colorMode == psd::colorMode::BITMAP)
+        {
+            std::cout << "Error: Unsupported color mode \n ColorMode : " << psd::colorMode::ToString(document->colorMode) << std::endl;
+            psd::DestroyDocument(document, &allocator);
+            file.Close();
+            return -1;
+        }
+
+        // check if image data section available. the image data section stores the final, merged image data,
+        //      as well as alpha channel data this only available when saving the document with "Maximize Compatibility" turned on.
+        if (document->imageDataSection.length == 0)
+        {
+            std::cout << "Error: Image data section is empty" << std::endl;
+            psd::DestroyDocument(document, &allocator);
+            file.Close();
+            return -1;
+        }
+
+        // Parse image resources section and image data section
+        psd::ImageResourcesSection *resourcesSection = psd::ParseImageResourcesSection(document, &file, &allocator);
+        psd::ImageDataSection *dataSection = psd::ParseImageDataSection(document, &file, &allocator);
+        if (!resourcesSection || !dataSection)
+        {
+            std::cout << "Error: Failed to parse image data section" << std::endl;
+            psd::DestroyDocument(document, &allocator);
+            psd::DestroyImageResourcesSection(resourcesSection, &allocator);
+            psd::DestroyImageDataSection(dataSection, &allocator);
+            file.Close();
+            return -1;
+        }
+        unsigned int channel_count = document->channelCount;
+        image->channels = new Channel *[channel_count];
+        psd::AlphaChannel *channel_resource = &resourcesSection->alphaChannels[0];
+
+        for (unsigned int i = 0; i < channel_count; i++)
+        {
+            image->channels[i] = new Channel();
+
+            int result = getChannel(dataSection->images[i].data, document, channel_resource, image->channels[i], i);
+            // if failed to get channel, destroy document  resources and data section and return
+            if (result < 0)
+            {
+                std::cout << "Error: Failed to get channel" << std::endl;
+                psd::DestroyDocument(document, &allocator);
+                psd::DestroyImageResourcesSection(resourcesSection, &allocator);
+                psd::DestroyImageDataSection(dataSection, &allocator);
+                file.Close();
+                return -1;
+            }
+            channel_resource++;
+        }
+        // set image properties
+        image->width = document->width;
+        image->height = document->height;
+        image->channelCount = document->channelCount;
+        image->colorMode = document->colorMode;
+
+        // destroy document  resources and data section
+        psd::DestroyDocument(document, &allocator);
+        psd::DestroyImageResourcesSection(resourcesSection, &allocator);
+        psd::DestroyImageDataSection(dataSection, &allocator);
+        file.Close();
+
+        return 0;
+    }
+
 }
+
+IMAGE_NAMESPACE_END

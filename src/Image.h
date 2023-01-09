@@ -1,77 +1,83 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#pragma once
+#include "NameSpace.h"
 #include "Channel.h"
 #include <stdint.h>
 
-namespace Image
+IMAGE_NAMESPACE_BEGIN
+class Channel;
+
+// ------------------------------------------------------------
+// supported file formats
+typedef enum SupportedFormats
 {
-    class Channel;
-    
-    // ------------------------------------------------------------
-    // supported file formats
-    typedef enum SupportedFormats
+    UNKNOWN = -1,
+    PSD = 0
+
+} SupportedFormats;
+
+// ------------------------------------------------------------
+// supported file formats to string
+const char *SupportedFormatsToString(unsigned int value);
+
+// ------------------------------------------------------------
+// string to supported file formats
+SupportedFormats StringToSupportedFormats(const char *value);
+
+// ------------------------------------------------------------
+// image class
+class Image
+{
+public:
+    enum Enum
     {
-        PSD = 0
-
-    } SupportedFormats;
-
-    // ------------------------------------------------------------
-    // color space : color space of image
-    typedef enum ColorSpace
-    {
-        RGB = 0,
-        CMYK = 1,
-        HSV = 2,
-        LAB = 3,
-        MULTI_CHANNEL = 4
-    } ColorSpace;
-
-    // ------------------------------------------------------------
-    // image class
-    class Image
-    {
-    public:
-        // ---------------
-        // constructor
-        Image();
-
-        // ---------------
-        // destructor
-        ~Image();
-        // ---------------
-        // assign operator
-        Image &operator=(const Image &other);
-
-    public:
-        uint32_t width;              // width of image
-        uint32_t height;             // height of image
-        Channel **channels;          // channels of image
-        uint8_t channelCount;        // number of channels
-        uint8_t colorSpace;       // color space of image
-        SupportedFormats fileformat; // file format of image
-
-    public:
-        // ---------------
-        // load image from file
-        int open(const char *path);
-
-        // ---------------
-        // save image to file jpeg format
-        int save(const char *path);
-
-        // ---------------
-        // close image
-        int close();
-
-        // ---------------
-        // interleave RGB data from channels
-        uint8_t *InterleaveRGB();
-
-        // ---------------
-        // resize image
-        Image *resize(uint32_t width, uint32_t height);
-        Image *resize(uint32_t size, bool keepAspectRatio);
+        BITMAP = 0,
+        GRAYSCALE = 1,
+        INDEXED = 2,
+        RGB = 3,
+        CMYK = 4,
+        MULTICHANNEL = 7,
+        DUOTONE = 8,
+        LAB = 9
     };
-}
+    // ---------------
+    // constructor
+    Image();
 
-#endif // IMAGE_H
+    // ---------------
+    // destructor
+    ~Image();
+    // ---------------
+    // assign operator
+    Image &operator=(const Image &other);
+
+public:
+    uint32_t width;              // width of image
+    uint32_t height;             // height of image
+    Channel **channels;          // channels of image
+    uint8_t channelCount;        // number of channels
+    uint8_t colorMode;           // color space of image
+    SupportedFormats fileformat; // file format of image
+    uint8_t *interleavedRgb;     // interleaved RGB data
+
+public:
+    // ---------------
+    // load image from file
+    int open(const char *path);
+
+    // ---------------
+    // save image to file jpeg format
+    int save(const char *path);
+
+    // ---------------
+    // close image
+    int close();
+
+    int free();
+
+    // ---------------
+    // interleave RGB data from channels
+    uint8_t *InterleaveRGB();
+};
+IMAGE_NAMESPACE_END
+
+
