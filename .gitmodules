@@ -5,6 +5,3 @@
 	path = modules/psd_sdk
 	url = https://github.com/yasintuncer/psd_sdk.git
 
-[submodule "modules/CLI11"]
-	path = modules/CLI11
-	url = https://github.com/yasintuncer/CLI11.git
