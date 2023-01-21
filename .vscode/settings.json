@@ -1,7 +1,15 @@
 {
     "cmake.debugConfig": {
         "args": [
-            "/home/master/Yasin/Projects/Image/10renk"
+            "-d",
+            "/home/master/Yasin/Projects/test_data/10renk",
+            "--recursive",
+            "--output_dir",
+            "/home/master/Yasin/Projects/Image/result",
+            "-r",
+            "512X512",
+            "--log_dir",
+            "/home/master/Yasin/Projects/Image/log"
         ]
     },
     "files.associations": {

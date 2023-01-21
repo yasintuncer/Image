@@ -9,6 +9,13 @@
 #include <iostream>
 #include <cstring>
 
+#if defined(__APPLE__)
+#include <stdlib.h>
+#include <errno.h>
+#else
+#include <malloc.h>
+#endif
+
 //------------------------------------------ Image ------------------------------------------
 IMAGE_NAMESPACE_BEGIN
 
@@ -45,6 +52,7 @@ Image::Image()
     channels = NULL;
     channelCount = 0;
     colorMode = RGB;
+    interleavedRgb = NULL;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -53,7 +61,16 @@ Image::~Image()
 {
     if (channels)
     {
-        delete[] channels;
+        for (unsigned int i = 0; i < channelCount; i++)
+        {
+            channels[i]->~Channel();
+        }
+        channels == nullptr;
+    }
+    if (interleavedRgb)
+    {
+        free(interleavedRgb);
+        interleavedRgb == nullptr;
     }
 }
 
@@ -126,24 +143,38 @@ Image &Image::operator=(const Image &other)
 
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
-int Image::save(const char *path)
+int Image::save(const char *path, const char *format)
 {
-    uint8_t *dest = InterleaveRGB();
-    if (dest == nullptr)
+    if (interleavedRgb == nullptr)
     {
-        std::cout << "Error: Failed to interleave RGB" << std::endl;
+        InterleaveRGB();
+    }
+    if (interleavedRgb == nullptr)
+    {
         return -1;
     }
-    int result = Export::export_image(path, this, Export::PNG, 100);
-    delete[] dest;
+    Export::ExportAs exportAs;
+    std::string formatString = format;
+    if (formatString == "png" || formatString == "PNG")
+    {
+        exportAs = Export::PNG;
+    }
+    else if (formatString == "jpg" || formatString == "JPG" || formatString == "jpeg" || formatString == "JPEG")
+    {
+        exportAs = Export::JPEG;
+    }
+    else
+    {
+        std::cout << "Error: Unknown file format" << std::endl;
+        return -1;
+    }
+
+    int result = Export::export_image(path, this, exportAs, 100);
     return result;
 }
-int Image::free()
+int Image::Free()
 {
-    if (channels)
-    {
-        delete[] channels;
-    }
+    this->~Image();
     return 0;
 }
 IMAGE_NAMESPACE_END

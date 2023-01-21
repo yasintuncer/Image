@@ -58,7 +58,7 @@ public:
     uint8_t colorMode;           // color space of image
     SupportedFormats fileformat; // file format of image
     uint8_t *interleavedRgb;     // interleaved RGB data
-
+    uint8_t depth;
 public:
     // ---------------
     // load image from file
@@ -66,17 +66,18 @@ public:
 
     // ---------------
     // save image to file jpeg format
-    int save(const char *path);
+    int save(const char *path, const char *format);
 
     // ---------------
     // close image
     int close();
 
-    int free();
+    int Free();
 
     // ---------------
     // interleave RGB data from channels
     uint8_t *InterleaveRGB();
+
 };
 IMAGE_NAMESPACE_END
 

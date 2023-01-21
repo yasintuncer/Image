@@ -1,8 +1,13 @@
 #include "Channel.h"
 #include <cstring>
 
+#if defined(__APPLE__)
+#include <stdlib.h>
+#include <errno.h>
+#else
+#include <malloc.h>
+#endif
 IMAGE_NAMESPACE_BEGIN
-
 
 // ------------------------------------------------------------
 // ------------------------------------------------------------
@@ -24,7 +29,8 @@ Channel::~Channel()
 {
     if (data)
     {
-        delete[] data;
+        free(data);
+        data == nullptr;
     }
 }
 

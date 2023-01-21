@@ -3,6 +3,8 @@
 #include "Image.h"
 #include <stdint.h>
 
+
+
 IMAGE_NAMESPACE_BEGIN
 // ------------------------------------------------------------
 // mode : mode of channel

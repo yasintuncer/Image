@@ -1,255 +1,224 @@
 #include <string>
+#include <vector>
+#include <iostream>
 
-namespace Parser
+// Define the unsupported characters for the program to encode
+static const std::wstring UNDEFINED_SYMBOLS = L"!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+
+/*--------------------------------------------------------
+ * Command Arguments
+ */
+enum CommandID
 {
+    _VERSION = 0,
+    _HELP = 1,
+    _INFO = 2,
+    _FILE = 3,
+    _DIR = 4,
+    _RECURSIVE = 5,
+    _RESIZE = 6,
+    _EXPORT_TYPE = 7,
+    _OUTPUT = 8,
+    _LOG = 9,
+    _UNKNOWN = -1
+};
 
-    // Supported input formats
-    static const char help[2] = {"-h", "--help"};
-    static const char version[2] = {"-v", "--version"};
-    static const char file[2] = {"-f", "--file"};
-    static const char dir[2] = {"-d", "--dir"};
-    static const char recursive[2] = {"-r", "--recursive"};
-    static const char info[2] = {"-i", "--info"};
-    static const char _export[2] = {"-e", "--export"};
-    static const char resize[2] = {"-s", "--resize"};
-    static const char output_dir = "--output_dir ";
-    static const char output_name = "--output_name ";
-    static const char output_name_ext = "--output_name_ext ";
+/*--------------------------------------------------------
+ * Command
+ * @brief: Base class for all commands
+ */
+typedef struct Command
+{
+    CommandID id;
+    std::string name;
+    std::string description;
+    bool is_valid;
+    void virtual init(const char *input) = 0;
+} Command;
 
-    // ----------------------------- COMMANDS -----------------------------
-    /*
-     * CommandID
-     * @brief: Enumerates the commands
-     */
-    typedef enum CommandID
+/*--------------------------------------------------------
+ * Version
+ * @brief: Version command
+ */
+typedef struct Version : public Command
+{
+    Version();
+    void init(const char *input) override;
+    void print_version();
+} Version;
+
+/*---------------------------------------------------------
+ * Help
+ * @brief: Help command
+ */
+typedef struct Help : public Command
+{
+    Help();
+    void init(const char *input) override;
+    void print_help();
+} Help;
+
+/*---------------------------------------------------------
+ * Info
+ * @brief: Info command
+ */
+typedef struct Info : public Command
+{
+    Info();
+    void init(const char *input) override;
+} Info;
+
+/*---------------------------------------------------------
+ * File
+ * @brief: File command
+ */
+typedef struct File : public Command
+{
+    File();
+    void init(const char *input) override;
+    std::string filename;
+    std::string extension;
+    std::string file_path;
+
+} File;
+
+/*---------------------------------------------------------
+ * Dir
+ * @brief: Dir command
+ */
+typedef struct Dir : public Command
+{
+    Dir();
+    void init(const char *input) override;
+    std::string dir_path;
+} Dir;
+
+/*---------------------------------------------------------
+ * Recursive
+ * @brief: Recursive command
+ */
+typedef struct Recursive : public Command
+{
+    Recursive();
+    void init(const char *input) override;
+} Recursive;
+
+/*---------------------------------------------------------
+ * Resize
+ * @brief: Resize command
+ */
+typedef struct Resize : public Command
+{
+    Resize();
+    void init(const char *input) override;
+    unsigned int width = 0;
+    unsigned int height = 0;
+    unsigned int edge_size = 0;
+} Resize;
+
+/*---------------------------------------------------------
+ * ExportType
+ * @brief: ExportType command
+ */
+typedef struct ExportType : public Command
+{
+    enum Enum
     {
-        HELP = 0,
-        VERSION = 1,
-        FILE = 2,
-        DIR = 3,
-        RECURSIVE = 4,
-        INFO = 5,
-        EXPORT = 6,
-        RESIZE = 7,
-        OUTPUT_DIR = 8,
-        OUTPUT_NAME = 9,
-        OUTPUT_NAME_EXT = 10
-    } CommandID;
-
-    /*
-     * Command
-     * @brief: Base class for all commands
-     */
-    struct Command
-    {
-        CommandID id;
-        const char *name;
-        const char *description;
-        bool is_valid;
-        void virtual init(const char *input) = 0;
-    } Command;
-
-    /*
-     * VersionCommand
-     * @brief: Prints the version of the program
-     */
-    struct VersionCommand : Command
-    {
-        Command()
-        {
-            id = VERSION;
-            name = "version";
-            description = "Prints the version of the program";
-            is_valid = false;
-        }
-
-        char *version;
-        void print_version();
+        PNG = 0,
+        JPG = 1,
+        BMP = 2,
+        UNKNOWN = -1
     };
+    ExportType();
+    void init(const char *input) override;
+    Enum type;
+} ExportType;
 
-    /*
-     * HelpCommand
-     * @brief: Prints the help of the program
-     */
-    struct HelpCommand : Command
-    {
-        Command()
-        {
-            id = HELP;
-            name = "help";
-            description = "Prints the help of the program";
-            is_valid = false;
-        }
-        void print_help();
-    };
+/*---------------------------------------------------------
+ * Output
+ * @brief: Output command
+ */
+typedef struct Output : public Command
+{
+    Output();
+    void init(const char *input) override;
+    void set_output_name(const char *input);
+    void set_output_dir(const char *input);
+    void set_output_adjective(const char *input);
+    std::string output_name;
+    std::string output_dir;
+    std::string output_adjective;
 
-    /*
-     * FileCommand
-     * @brief: Reads a file
-     */
-    struct FileCommand : Command
-    {
-        Command()
-        {
-            id = FILE;
-            name = "file";
-            description = "Reads a file";
-            is_valid = false;
-        }
-        void init(const char *input) override;
-        char *file_name;
-        char *file_path;
-        char *file_extension;
-    };
+    std::string get_output_path();
+} Output;
 
-    /*
-     * DirCommand
-     * @brief: Reads a directory
-     */
-    struct DirCommand : Command
-    {
-        Command()
-        {
-            id = DIR;
-            name = "dir";
-            description = "Reads a directory";
-            is_valid = false;
-        }
-        void init(const char *input) override;
 
-        char *dir_path;
-    };
 
-    /*
-     * RecursiveCommand
-     * @brief: Reads a directory recursively
-     */
-    struct RecursiveCommand : Command
-    {
-        Command()
-        {
-            id = RECURSIVE;
-            name = "recursive";
-            description = "Reads a directory recursively";
-            is_valid = false;
-        };
-    };
+/*---------------------------------------------------------
+* Log
+* @brief: Log command
+*/
+typedef struct Log : public Command
+{
+    Log();
+    void init(const char *input) override;
+    std::string log_path;
+} Log;
 
-    /*
-     * InfoCommand
-     * @brief: Prints the info of the file
-     */
-    struct InfoCommand : Command
-    {
-        Command()
-        {
-            id = INFO;
-            name = "info";
-            description = "Prints the info of the file";
-            is_valid = false;
-        }
-        void print_info();
-    };
 
-    /*
-     * ExportCommand
-     * @brief: Exports the file
-     */
-    struct ExportCommand : Command
-    {
-        // Supported output formats
-        enum
-        {
-            PNG = 0,
-            JPG = 1
-        } Command()
-        {
-            id = EXPORT;
-            name = "export";
-            description = "Exports the file";
-            is_valid = false;
-        }
-        void init(const char *input) override;
-        int format;
-    };
+/*---------------------------------------------------------
+ * Parser
+ * @brief: Parser class
+ */
+class Parser
+{
+public:
+    //constructor and destructor
+    Parser();
+    ~Parser();
+    
+    // ----------- print functions
+    // print_help() prints the help message
+    void print_help();
+    // print_version() prints the version message
+    void print_version();
+    // ----------- end print functions
 
-    /*
-     * ResizeCommand
-     * @brief: Resizes the file
-     */
-    struct ResizeCommand : Command
-    {
-        Command()
-        {
-            id = RESIZE;
-            name = "resize";
-            description = "Resizes the file";
-            is_valid = false;
-        }
-        void init(const char *input) override;
-        int dest_width;
-        int dest_height;
-    };
 
-    /*
-     * OutputCommand
-     * @brief: Sets the output name
-     */
-    struct OutputNameCommand : Command
-    {
-        Command()
-        {
-            id = OUTPUT;
-            name = "output_name";
-            description = "Sets the output name, if not defined the output name will be the same as the input file.";
-            is_valid = false;
-        }
-        void init(const char *input) override;
+    // parses the command line arguments
+    bool parse(int argc, char *argv[]);
+    
+    // ----------- get functions
+    // get_input_files() returns the list of input files
+    std::vector<std::string> get_input_file_paths();
+    // get_output_paths() returns the list of output paths
+    std::vector<std::string> get_output_file_paths();
 
-        char *output_name;
-    };
+    // return width if return 0 then no width was specified
+    unsigned int width();
+    // return height if return 0 then no height was specified
+    unsigned int height();
+    // return edge_size if return 0 then no edge_size was specified
+    unsigned int edge_size();
+    // return export type
+    std::string export_type();
+    std::string log_dir();
+    bool isInfoValid();
+    bool isLogValid();
+    bool isResizeValid();
 
-    /*
-     * OutputCommand
-     * @brief: adds a adjective to the name of the output file
-     */
-    struct OutputNameExtCommand : Command
-    {
-        Command()
-        {
-            id = OUTPUT;
-            name = "output_name_ext";
-            description = "Adds a adjective to the name of the output file. ";
-            is_valid = false;
-        }
-        void init(const char *input) override;
-        char *output_name_extension;
-    };
-
-    /*
-     * OutputDirCommand
-     * @brief: Sets the output directory.
-     * If not defined the output directory will be set in the same directory as the input file in a folder called 'output'
-     */
-    struct OutputDirCommand : Command
-    {
-        Command()
-        {
-            id = OUTPUT;
-            name = "output_dir";
-            description = "Sets the output directory. If not define the output directory will be created in the same directory as the input file in a folder called 'output'";
-            is_valid = false;
-        }
-        void init(const char *input) override;
-        char *output_dir;
-    };
-
-    /*
-     * CommandParser
-     * @brief: Parses the command line arguments
-     * @param argc: Number of arguments
-     * @param argv: Array of arguments
-     */
-    void parse(int argc, char *argv[]);
-
-}
+private:
+    std::vector<std::string> file_list;
+    std::vector<std::string> output_list;
+    Help *help;
+    Version *version;
+    Info *info;
+    File *file;
+    Dir *dir;
+    Recursive *recursive;
+    Resize *resize;
+    ExportType *_export_type;
+    Output *output;
+    Log *log;
+    bool parsing_successful;
+};

@@ -85,8 +85,8 @@ namespace
 
         case psd::COLOR_SPACE::LAB:
             dst[0] = remap(src[0], 65535.0, 0.0, 100.0, 0.0);
-            dst[1] = remap(src[1], 65535.0, 0.0, 255.0, -128.0);
-            dst[2] = remap(src[2], 65535.0, 0.0, 255.0, -128.0);
+            dst[1] = remap(src[1], 65535.0, 0.0, 100.0, 0.0);
+            dst[2] = remap(src[2], 65535.0, 0.0, 255.0, 0.0);
             dst[3] = remap(src[3], 65535.0, 0.0, 255.0, 0.0);
             break;
 
@@ -377,22 +377,25 @@ namespace DecodePsd
 
         // Open file
         const wchar_t *wpath = stringUtil::ConvertString(filename);
+        
         if (!file.OpenRead(wpath))
         {
-            std::cout << "Error: Failed to open file " << wpath << std::endl;
+            std::cout << "Error: Failed to open file " << filename << std::endl;
             return -1;
         }
 
         // Create document
         psd::Document *document;
         document = psd::CreateDocument(&file, &allocator);
-
         if (!document)
         {
             std::cout << "Error: Failed to create document" << std::endl;
             file.Close();
             return -1;
         }
+
+
+        image->depth = document->bitsPerChannel;
         // indexed, duotone, bitmap color modes are not supported yet
         if (document->colorMode == psd::colorMode::INDEXED || document->colorMode == psd::colorMode::DUOTONE || document->colorMode == psd::colorMode::BITMAP)
         {
